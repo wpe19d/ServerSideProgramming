@@ -17,5 +17,20 @@ while(!numberOfWindows || isNaN(numberOfWindows) || numberOfWindows < 0 || numbe
 console.log(getNetArea(length, width, numberOfWindows));
 
 function getNetArea(length, width, numberOfWindows) {
-    return ((length * width) - (numberOfWindows * (18 * 27)) - (72 * 80));
+    return (getWallArea(length, width) - (numberOfWindows * getWindowArea()) - (getDoorArea()));
+}
+
+function getWallArea(length, width) {
+    
+    return (((length * 8) * 2) + ((width * 8) * 2));
+}
+
+function getWindowArea() {
+    var area = ((18/12) * (27/12));
+    return Math.ceil(area);
+}
+
+function getDoorArea() {
+    var area =  ((72/12) * (80/12)); 
+    return Math.ceil(area);
 }
