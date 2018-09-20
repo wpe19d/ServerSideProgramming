@@ -6,7 +6,8 @@ let Lot = require("../lib/lot");
 describe('Lot', function () {
 
   it("Has a self-generated id", function () {
-
+    var lot = new Lot(5, 'stuff');
+    expect(lot).to.have.property('id').to.not.be.undefined;
   });
 
   it("Only allows a positive number for amount", function () {

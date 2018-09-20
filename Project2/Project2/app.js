@@ -10,14 +10,14 @@ while (action !== 3) {
   if (action == 1) {
     var amount = 0;
     while(amount < 1 || isNaN(amount)) {
-      amount = readline.question("Please enter the amount for this lot: ");
+      amount = readline.questionInt("Please enter the amount for this lot: ");
     }
 
     var notes = readline.question("Please enter any notes for this lot: ");
 
     const thisLot = buildLot(amount, notes);
-    var row = readline.question("What row would will this lot occupy: ");
-    var square = readline.question("What square will this lot occupy: ");
+    var row = readline.questionInt("What row would will this lot occupy: ");
+    var square = readline.questionInt("What square will this lot occupy: ");
     const location = getLocation(row, square);
 
     if (warehouse.addLot(thisLot, location.row, location.square)) {
@@ -29,10 +29,14 @@ while (action !== 3) {
 
   } if (action === 2) {
     // Ask the user where the current lot is, then look up a reference to that lot
-    const location = getLocation();
+    var row = readline.questionInt("What row does this lot occupy: ");
+    var square = readline.questionInt("What square does this lot occupy: ");
+
+    const location = getLocation(row, square);
     let sourceLot = warehouse.getLot(location.row, location.square);
     if (sourceLot && sourceLot.amount > 0) {
       // Ask the user how much they want to ship, then generate a new shipping lot and ship it
+
       const shippingAmount = getShipAmount(sourceLot.amount);
       let shippingLot = sourceLot.shipInventory(shippingAmount);
       warehouse.shipLot(shippingLot);
@@ -55,15 +59,15 @@ function getActionChoice() {
   console.log("1. Add Inventory");
   console.log("2. Ship Inventory");
   console.log("3. Quit Application");
-  selection = readline.question("Selection: ");
-  return Number(selection);
+  selection = readline.questionInt("Selection: ");
+  return selection;
 
 }
 
 // Interacts with the user to build a new lot object
 function buildLot(newAmount, newNotes) {
   // Return a new lot object based on this input
-  var lot = new Lot(Number(newAmount), newNotes);
+  var lot = new Lot(newAmount, newNotes);
   return lot;
   // make sure they enter a valid amount
   // Get the notes as well
@@ -73,6 +77,12 @@ function buildLot(newAmount, newNotes) {
 // Interacts with the user to ask how much they want to ship
 function getShipAmount(currentAmount) {
   // Make sure the user enters a valid number that isn't greater than the amount that can be shipped
+  var amountToShip = readline.questionInt("How much would you like to ship from the lot: ");
+  if(amountToShip > currentAmount) {
+    getShipAmount(currentAmount);
+  }
+
+  return amountToShip;
 }
 
 // Interacts with the user to ask where a lot should be, returns an object with row and location numbers
