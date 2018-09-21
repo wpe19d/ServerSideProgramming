@@ -12,10 +12,9 @@ class Lot {
       // decrements the inventory amount
       // returns a new lot object containing the inventory amount and a copy of the notes, with a brand new lot id
       // If an invalid ship action is attempted, the function should return false
-
       let newLot = new Lot(amountShipped, this.notes);
 
-      if(!newLot){
+      if(!newLot || amountShipped > this.amount || amountShipped < 0) {
         return false;
       }
 
