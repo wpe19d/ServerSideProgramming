@@ -5,6 +5,7 @@ let Lot = require("./lib/lot");
 let config = require("./config");
 
 let action = getActionChoice();
+warehouse.getWarehouseInventory();
 // Keep looping as long as they don't want to exit the program
 while (action !== 3) {
   if (action == 1) {

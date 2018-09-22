@@ -31,7 +31,8 @@ module.exports = function () {
     // Will store a lot in the system at a given location if it's empty or contains an empty lot.
     // Returns a boolean indicating success or failure.
     addLot: function (lot, row, square) {
-      if(warehouseInventory[row][square]) {
+
+      if(row > 25 || square > 10 || warehouseInventory[row][square]) {
         return false;
       }
 
