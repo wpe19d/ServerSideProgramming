@@ -9,20 +9,21 @@ warehouse.getWarehouseInventory();
 // Keep looping as long as they don't want to exit the program
 while (action !== 3) {
   if (action == 1) {
+
     var amount = 0;
+
     while(amount < 1 || isNaN(amount)) {
       amount = readline.questionInt("Please enter the amount for this lot: ");
     }
 
     var notes = readline.question("Please enter any notes for this lot: ");
 
+    //creates lot
     const thisLot = buildLot(amount, notes);
-    var row = readline.questionInt("What row would will this lot occupy: ");
-    var square = readline.questionInt("What square will this lot occupy: ");
-    const location = getLocation(row, square);
+    const location = getLocation();
 
+    //adds lot to location if valid
     if (warehouse.addLot(thisLot, location.row, location.square)) {
-      console.log(warehouse.getLot(location.row, location.square));
       console.log(`Lot ${thisLot.id} has been added with ${thisLot.amount} inventory at location ${location.row}, ${location.square}`);
     } else {
       console.log(`Sorry, I am unable to add the lot to location ${location.row}, ${location.square}.`);
@@ -30,17 +31,18 @@ while (action !== 3) {
 
   } if (action === 2) {
     // Ask the user where the current lot is, then look up a reference to that lot
-    var row = readline.questionInt("What row does this lot occupy: ");
-    var square = readline.questionInt("What square does this lot occupy: ");
-
-    const location = getLocation(row, square);
+    const location = getLocation();
     let sourceLot = warehouse.getLot(location.row, location.square);
     if (sourceLot && sourceLot.amount > 0) {
-      // Ask the user how much they want to ship, then generate a new shipping lot and ship it
 
+      // Ask the user how much they want to ship, then generate a new shipping lot and ship it
       const shippingAmount = getShipAmount(sourceLot.amount);
       let shippingLot = sourceLot.shipInventory(shippingAmount);
+
+      //ships lot (adds to outbound inventory)
       warehouse.shipLot(shippingLot);
+      warehouse.updateLotAmount(shippingLot.amount, location.row, location.square);
+
       console.log(`Lot ${shippingLot.id} has been shipped with ${shippingAmount} inventory.`);
     } else {
       console.log(`Sorry, a lot with inventory can not be found at location ${location.row}, ${location.square}.`);
@@ -79,15 +81,18 @@ function buildLot(newAmount, newNotes) {
 function getShipAmount(currentAmount) {
   // Make sure the user enters a valid number that isn't greater than the amount that can be shipped
   var amountToShip = readline.questionInt("How much would you like to ship from the lot: ");
-  if(amountToShip > currentAmount) {
-    getShipAmount(currentAmount);
-  }
 
+  if(amountToShip > currentAmount) {
+    amountToShip = getShipAmount(currentAmount);
+  }
   return amountToShip;
 }
 
 // Interacts with the user to ask where a lot should be, returns an object with row and location numbers
 function getLocation(row, square) {
+
+  var row = readline.questionInt("What row for this lot: ");
+  var square = readline.questionInt("What square for this lot: ");
   
   location = {
     row: row,

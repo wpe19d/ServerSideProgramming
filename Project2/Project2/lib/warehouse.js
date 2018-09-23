@@ -40,6 +40,18 @@ module.exports = function () {
       return true;
     },
 
+    //Updates lot amount in at specified inventory location
+    //when lot has changed.
+    updateLotAmount: function(amount, row, square) {
+
+      if(row > 25 || square > 10) {
+        return false;
+      }
+
+      warehouseInventory[row][square].amount = amount;
+      return true;
+    },
+
     // Will add a lot to the outbound inventory queue
     shipLot: function (lot) {
       outboundInventory.push(lot);
